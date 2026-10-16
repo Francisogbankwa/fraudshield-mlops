@@ -11,7 +11,7 @@ from sklearn.preprocessing import StandardScaler
 
 from data import load_data, split_data
 from evaluate import evaluate_model
-
+from validate import validate_data
 
 ROOT = Path(__file__).resolve().parents[1]
 MODEL_DIR = ROOT / "models"
@@ -20,7 +20,8 @@ MODEL_DIR = ROOT / "models"
 def main():
     # STEP 1: Load and split data
     df = load_data()
-
+    # Validate before splitting or training
+    validate_data(df)
     X_train, X_val, X_test, y_train, y_val, y_test = split_data(df)
 
     print("Training samples:", len(X_train))
