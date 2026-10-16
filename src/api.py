@@ -32,8 +32,7 @@ def load_model():
 def load_threshold():
     with open(MODEL_DIR / "threshold.json") as file:
         return json.load(file)["threshold"]
-model = load_model()
-threshold = load_threshold()
+
 class Transaction(BaseModel):
     Time: float
     Amount: float = Field(ge=0)
