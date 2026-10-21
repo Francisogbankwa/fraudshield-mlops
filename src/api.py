@@ -3,9 +3,14 @@ from pathlib import Path
 import json
 import joblib
 import pandas as pd
+import logging
+import time
 from fastapi import HTTPException
 from pydantic import BaseModel, Field
 from functools import lru_cache
+
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
 
 app = FastAPI(
     title="FraudShield AI",
@@ -39,6 +44,7 @@ class Transaction(BaseModel):
     features: list[float] = Field(min_length=28, max_length=28) 
 @app.post("/predict")
 def predict(transaction: Transaction):
+    start_time = time.perf_counter()
     model = load_model()
     threshold = load_threshold()
 
@@ -57,12 +63,21 @@ def predict(transaction: Transaction):
     try:
         probability = float(model.predict_proba(data)[0][1])
     except Exception:
+        logger.exception("prediction_failed")
         raise HTTPException(
             status_code=500,
             detail="Model prediction failed"
         )
 
     prediction = int(probability >= threshold)
+
+    latency_ms = (time.perf_counter() - start_time) * 1000
+
+    logger.info(
+        "prediction_completed latency_ms=%.2f prediction=%d",
+        latency_ms,
+        prediction,
+    )
 
     return {
         "fraud_probability": probability,
