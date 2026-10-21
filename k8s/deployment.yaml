@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fraudshield-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fraudshield-api
+  template:
+    metadata:
+      labels:
+        app: fraudshield-api
+    spec:
+      containers:
+        - name: fraudshield-api
+          image: fraudshield-api:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8000
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          volumeMounts:
+            - name: model-files
+              mountPath: /app/models
+              readOnly: true  
+      volumes:
+        - name: model-files
+          secret:
+            secretName: fraudshield-model                        

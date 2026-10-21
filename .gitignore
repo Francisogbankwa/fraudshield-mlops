@@ -5,4 +5,8 @@ models/
 mlruns/
 mlflow.db
 mlflow.db-*
+*.tfstate
+*.tfstate.*
+**/.terraform/*
+terraform/fraudshield-info.txt
 .env
