@@ -10,3 +10,16 @@ mlflow.db-*
 **/.terraform/*
 terraform/fraudshield-info.txt
 .env
+# Terraform
+*.tfvars
+*.tfvars.json
+crash.log
+crash.*.log
+
+# Credentials
+*.pem
+*.key
+.env.*
+
+# Local files
+terraform/fraudshield-info.txt
